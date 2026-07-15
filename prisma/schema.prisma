@@ -1,10 +1,14 @@
+[file name]: schema.txt
+[file content begin]
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model HeroSlide {
@@ -75,3 +79,4 @@ model ContactSubmission {
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 }
+[file content end]
