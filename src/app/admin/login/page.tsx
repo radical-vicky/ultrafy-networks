@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -18,14 +16,15 @@ export default function AdminLoginPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ password }),
     });
-    setLoading(false);
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
       setError(data.error || "Login failed");
+      setLoading(false);
       return;
     }
-    router.push("/admin");
-    router.refresh();
+    // Full page navigation so the new cookie is guaranteed to be sent
+    // with the very next request (avoids any soft-navigation edge cases).
+    window.location.href = "/admin";
   }
 
   return (
