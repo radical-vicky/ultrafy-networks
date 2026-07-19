@@ -22,19 +22,22 @@ export default async function AdminDashboard() {
     { label: "Open Jobs", value: jobs, href: "/admin/jobs" },
     { label: "Testimonials", value: testimonials, href: "/admin/testimonials" },
     { label: "Active Investments", value: investments, href: "/admin/investments" },
-    { label: "Unread Messages", value: unreadContacts, href: "/admin/contacts" },
+    { label: "Unread Messages", value: unreadContacts, href: "/admin/contacts", alert: unreadContacts > 0 },
   ];
 
   return (
     <AdminShell>
-      <h1 className="font-display text-2xl font-bold text-ink">Dashboard</h1>
-      <p className="mt-1 text-sm text-ink/50">Manage everything shown on the public Ultrafy Networks site.</p>
+      <h1 className="font-display text-xl font-semibold text-[#171717]">Overview</h1>
+      <p className="mt-0.5 text-[13px] text-[#8F8F8F]">Manage everything shown on the public Ultrafy Networks site.</p>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => (
-          <Link key={c.href} href={c.href} className="glass rounded-2xl p-6 transition hover:shadow-glow">
-            <p className="font-mono text-3xl font-bold text-signal-blue">{c.value}</p>
-            <p className="mt-1 text-sm text-ink/60">{c.label}</p>
+          <Link key={c.href} href={c.href} className="av-card block p-5">
+            <div className="flex items-start justify-between">
+              <p className="font-mono text-[28px] font-semibold leading-none text-[#171717]">{c.value}</p>
+              {c.alert && <span className="h-2 w-2 rounded-full bg-[#EE0000]" />}
+            </div>
+            <p className="mt-2 text-[13px] text-[#8F8F8F]">{c.label}</p>
           </Link>
         ))}
       </div>
