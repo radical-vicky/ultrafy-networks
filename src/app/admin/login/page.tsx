@@ -11,18 +11,30 @@ export default function AdminLoginPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password }),
-    });
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      setError(data.error || "Login failed");
+
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || "Login failed");
+        setLoading(false);
+        return;
+      }
+
+      // Full page reload so the new cookie is guaranteed to be sent
+      // with the very next request.
+      window.location.href = "/admin";
+    } catch (err) {
+      console.error("[Login] Error:", err);
+      setError("Network error. Please try again.");
       setLoading(false);
-      return;
     }
-    window.location.href = "/admin";
   }
 
   return (
@@ -39,19 +51,34 @@ export default function AdminLoginPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="rounded-xl border border-[#EAEAEA] bg-white p-6 shadow-sm">
-          <label className="av-label">Password</label>
+          <label htmlFor="password" className="av-label">
+            Password
+          </label>
           <input
+            id="password"
             type="password"
             required
             autoFocus
+            disabled={loading}
             className="av-input"
+            placeholder="Enter admin password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          {error && <p className="mt-2 text-[13px] text-[#EE0000]">{error}</p>}
+
+          {error && (
+            <div className="mt-3 rounded-md border border-[#FFD9D9] bg-[#FFF5F5] px-3 py-2 text-[13px] text-[#EE0000]">
+              {error}
+            </div>
+          )}
+
           <button type="submit" disabled={loading} className="av-btn-black mt-5 w-full !py-2.5">
             {loading ? "Signing in…" : "Sign In"}
           </button>
+
+          <p className="mt-5 border-t border-[#F2F2F2] pt-4 text-center text-[11px] text-[#8F8F8F]">
+            Protected area. Unauthorized access is prohibited.
+          </p>
         </form>
 
         <p className="mt-5 text-center text-[12px] text-[#8F8F8F]">
@@ -60,5 +87,4 @@ export default function AdminLoginPage() {
       </div>
     </div>
   );
-            }
-          
+}
